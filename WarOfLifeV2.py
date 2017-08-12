@@ -13,21 +13,20 @@ def main():
         state002 = tf.Variable(tf.random_uniform([NY,NX//3], minval=0, maxval=2, dtype=tf.int32), name="state002")
         
         prestate = tf.concat([state000,state001,state002],1)
-        
     
-       
-        #board = tf.placeholder(tf.zero([NY,NX,1]))
+        board = tf.Variable(tf.zeros([1,NY,NX,1],tf.float32))
         #colorimetrie = tf.placeholder(tf.zero([NY,NX,1]))
             # white = 0 
             # red = 1
             # greed = 2
             # blue = 3
+            
     with tf.name_scope("CGL"):
         
         state = tf.cast(tf.reshape(prestate,[1,NY,NX,1]), tf.float32)
         kernel = tf.reshape(tf.ones([3,3]), [3,3,1,1])
-        neighbours = tf.nn.conv2d(state, kernel, [1,1,1,1], "SAME") - state
-        survive = tf.logical_and( tf.equal(state, 1), tf.equal(neighbours, 2))
+        neighbours = tf.nn.conv2d(board, kernel, [1,1,1,1], "SAME") - board
+        survive = tf.logical_and( tf.equal(board, 1), tf.equal(neighbours, 2))
         born = tf.equal(neighbours, 3)
         newstate = tf.cast(tf.logical_or(survive, born), tf.float32)
        
@@ -37,10 +36,10 @@ def main():
     with tf.name_scope("session"):
         sess = tf.Session()   
         sess.run(init)
-        
+        sess.run(newstate)
+        sess.run(tf.assign(board,state))
         newstate_ = sess.run(tf.reshape(newstate, [NY,NX]))
-        state = newstate
-        sess.run(state)
+        sess.run(tf.assign(board, newstate))
         plot = plt.imshow(newstate_, cmap='Greys', interpolation='nearest')
 
        
@@ -48,13 +47,12 @@ def main():
     def animateFn(num, sess, state, newstate):
         sess.run(newstate)
         newstate_ = sess.run(tf.reshape(newstate, [NY,NX]))
-        state = newstate
-        sess.run(state)
+        sess.run(tf.assign(board, newstate))
         plot.set_array(newstate_)
         return plot
 	
    
-    ani = animation.FuncAnimation(fig, animateFn, 5, fargs=(sess, state, newstate), interval=2, blit=False)
+    ani = animation.FuncAnimation(fig, animateFn, 5, fargs=(sess, board, newstate), interval=2, blit=False)
     plt.show()
        
         
