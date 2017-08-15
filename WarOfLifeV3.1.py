@@ -35,6 +35,7 @@ def main():
         state = tf.cast(tf.reshape(pre_state,[1,NY,NX,1]), tf.float32) # formatage du premier état
         c_state = tf.cast(tf.reshape(c_pre_state,[1,NY,NX,1]), tf.float32) # formatage du premier état des couleurs
         kernel = tf.reshape(tf.ones([3,3]), [3,3,1,1]) # filtre 3 par 3
+        kernel_point = tf.reshape(tf.ones([NY,NX]), [NY,NX,1,1])
         neighbours = tf.nn.conv2d(board, kernel, [1,1,1,1], "SAME") - board # carte des voisinages
         r_pre_neighbours = tf.cast(tf.equal(c_board, 1),tf.float32) # masque rouge
         g_pre_neighbours = tf.cast(tf.equal(c_board, 2),tf.float32) # masque vert
@@ -95,7 +96,7 @@ def main():
         gen = 1
         while True:
             
-            if (gen%101 == 0):
+            if (gen%100-1 == 0):
                 print(gen)
             if (RENDER == True):
                 SIZE = 6
@@ -141,9 +142,13 @@ def main():
                 gen+=1
 
             if (gen==1001):
+                red_point = sess.run(tf.count_nonzero(r_pre_neighbours))
+                green_point = sess.run(tf.count_nonzero(g_pre_neighbours)) 
+                blue_point = sess.run(tf.count_nonzero(b_pre_neighbours)) 
                 break
 
-    with tf.name_scope("train"):
+    #with tf.name_scope("train"):
+        
                 
 if __name__ == "__main__":
     main()
