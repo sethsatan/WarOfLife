@@ -105,11 +105,12 @@ def main():
         
         sess = tf.Session() # ouverture de la session
         writer = tf.summary.FileWriter('logs\\', sess.graph)
+        
         sess.run(init) # initilisation des vatiable de la session
         
         
         
-        n_step = 1000
+        n_step = 10
 
         for step in range(n_step):
             #if (step == n_step-1):
@@ -140,7 +141,7 @@ def main():
     
    
             PAUSE = True
-            print(step+'------')
+            print(str(step)+'------')
             gen = 1
             while True:
    
@@ -187,7 +188,7 @@ def main():
                     animateFn()
                     gen+=1
 
-                if (gen==100):
+                if (gen==20):
                     
                     red_point = sess.run(red_point0)
                     green_point = sess.run(green_point0)
@@ -216,22 +217,25 @@ def main():
 
                     red_point_ = sess.run(tf.reshape(red_point_,[1,py_]))
                     _state0_ = sess.run(tf.reshape(_state0_,[1,px]))
-
+                    
                     green_point_ = sess.run(tf.reshape(red_point_,[1,py_]))
                     _state1_ = sess.run(tf.reshape(_state0_,[1,px]))
                     
                     blue_point_ = sess.run(tf.reshape(red_point_,[1,py_]))
                     _state2_ = sess.run(tf.reshape(_state0_,[1,px]))
-                    print
-                    sess.run(train_step,feed_dict={x: _state0_, y_: red_point_})
-                    print('R : '+red_point_+'        Prediction : '+ sess.run(y))
+
+                    
+                    
+                    a,b = sess.run([train_step,cross_entropy],feed_dict={x: _state0_, y_: red_point_})
+                    tf.summary.scalar('entropy',b)
+                    #print(sess.run(cross_entropy))
                     
                     sess.run(train_step,feed_dict={x: _state1_, y_: green_point_})
-                    print('V : '+green_point_+'        Prediction : '+ sess.run(y))
+                    #tf.summary.scalar('train',cross_entropy)
                     
                     sess.run(train_step,feed_dict={x: _state2_, y_: blue_point_})
-                    print('B : '+blue_point_+'        Prediction : '+ sess.run(y))
-                    print('------')
+                    #tf.summary.scalar('train',cross_entropy)
+                    
                     break
 
     

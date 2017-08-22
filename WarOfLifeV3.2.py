@@ -11,7 +11,7 @@ def main():
         NY = 126 #ordonnée
         RENDER = False 
         
-        board = tf.Variable(tf.zeros([1,NY,NX,1],tf.float32), name="board", trainable=False) #plateau
+        board = tf.Variable(tf.zeros([1,NY,NX,1],tf.float32), name="board") #plateau
         c_board = tf.Variable(tf.zeros([1,NY,NX,1],tf.float32), name="c_board", trainable=False) # couleur sur le plateau
         
         state0 = tf.Variable(tf.random_uniform([NY,NX//3], minval=0, maxval=2, dtype=tf.int32), name="state0") #premier tier du plateau
@@ -106,12 +106,12 @@ def main():
         sess = tf.Session() # ouverture de la session
         writer = tf.summary.FileWriter('logs\\', sess.graph)
         sess.run(init) # initilisation des vatiable de la session
+
         
-        
-        
-        n_step = 1000
+        n_step = 16000
 
         for step in range(n_step):
+            
             #if (step == n_step-1):
             #    RENDER = True
             sess.run(tf.assign(board,state)) # assignation du premier état au plateau
@@ -140,7 +140,7 @@ def main():
     
    
             PAUSE = True
-            print(step+'------')
+            #print(str(step)+'------')
             gen = 1
             while True:
    
@@ -187,7 +187,7 @@ def main():
                     animateFn()
                     gen+=1
 
-                if (gen==100):
+                if (gen==2):
                     
                     red_point = sess.run(red_point0)
                     green_point = sess.run(green_point0)
@@ -216,22 +216,32 @@ def main():
 
                     red_point_ = sess.run(tf.reshape(red_point_,[1,py_]))
                     _state0_ = sess.run(tf.reshape(_state0_,[1,px]))
-
+                    
                     green_point_ = sess.run(tf.reshape(red_point_,[1,py_]))
                     _state1_ = sess.run(tf.reshape(_state0_,[1,px]))
                     
                     blue_point_ = sess.run(tf.reshape(red_point_,[1,py_]))
                     _state2_ = sess.run(tf.reshape(_state0_,[1,px]))
-                    print
-                    sess.run(train_step,feed_dict={x: _state0_, y_: red_point_})
-                    print('R : '+red_point_+'        Prediction : '+ sess.run(y))
+
                     
-                    sess.run(train_step,feed_dict={x: _state1_, y_: green_point_})
-                    print('V : '+green_point_+'        Prediction : '+ sess.run(y))
                     
-                    sess.run(train_step,feed_dict={x: _state2_, y_: blue_point_})
-                    print('B : '+blue_point_+'        Prediction : '+ sess.run(y))
-                    print('------')
+                    #a,b = sess.run([train_step,cross_entropy],feed_dict={x: _state0_, y_: red_point_})
+                    #print("red : "+str(b))
+                     
+                    a,b = sess.run([train_step,cross_entropy],feed_dict={x: _state1_, y_: green_point_})
+                    if(step%100==0):
+                        print("green : "+str(b)+" step : "+str(step))
+                    
+                    #a,b = sess.run([train_step,cross_entropy],feed_dict={x: _state2_, y_: blue_point_})
+                    #print("blue : "+str(b))
+
+
+                    sess.run(tf.assign(state2,state1))
+                    sess.run(tf.assign(state1,state0))
+                    #sess.run(tf.assign(state2,tf.random_uniform([NY,NX//3], minval=0, maxval=2, dtype=tf.int32)))
+                    #sess.run(tf.assign(state1,tf.random_uniform([NY,NX//3], minval=0, maxval=2, dtype=tf.int32)))
+                    sess.run(tf.assign(state0,tf.random_uniform([NY,NX//3], minval=0, maxval=2, dtype=tf.int32)))
+                    
                     break
 
     
