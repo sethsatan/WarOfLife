@@ -7,9 +7,11 @@ import numpy as np
     
 def main():     
     with tf.name_scope("input"):
-        NX = 126 #abscisse [Multiple de 3]
-        NY = 126 #ordonnée
-        RENDER = False 
+        NX = 60 #abscisse [Multiple de 3]
+        NY = 60 #ordonnée
+        RENDER = True
+        n_step = 100
+        sub_div = 100
         
         board = tf.Variable(tf.zeros([1,NY,NX,1],tf.float32), name="board") #plateau
         c_board = tf.Variable(tf.zeros([1,NY,NX,1],tf.float32), name="c_board", trainable=False) # couleur sur le plateau
@@ -75,7 +77,7 @@ def main():
         px = NY*(NX//3)
         x = tf.placeholder(tf.float32, shape=[None, px], name="x")
         
-        py_= ((NY*NX)//(5*5))*8                  
+        py_= (((NY*NX)//(5*5))*8)//sub_div                  
         y_ = tf.placeholder(tf.float32, shape=[None,py_], name="y_")
 
         W = tf.Variable(tf.zeros([px,py_]), name="W")
@@ -86,7 +88,7 @@ def main():
 
     with tf.name_scope("train"):
         
-        train_step = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
+        train_step = tf.train.GradientDescentOptimizer(0.1).minimize(cross_entropy)
         
         #train_step.run(feed_dict={x: {donnée}, y_: {point}})
 
@@ -108,7 +110,7 @@ def main():
         sess.run(init) # initilisation des vatiable de la session
 
         
-        n_step = 16000
+       
 
         for step in range(n_step):
             
@@ -140,10 +142,11 @@ def main():
     
    
             PAUSE = True
+            
             #print(str(step)+'------')
             gen = 1
             while True:
-   
+                
                 if (RENDER == True):
                     SIZE = 6
                     WIDTH = NX * SIZE 
@@ -187,11 +190,12 @@ def main():
                     animateFn()
                     gen+=1
 
-                if (gen==2):
+                if (gen==50):
                     
-                    red_point = sess.run(red_point0)
-                    green_point = sess.run(green_point0)
-                    blue_point = sess.run(blue_point0)
+                    red_point = sess.run(red_point0)//sub_div
+                    green_point = sess.run(green_point0)//sub_div
+                    blue_point = sess.run(blue_point0)//sub_div
+                    
                     red_point_ = sess.run(red_point_0)
                     green_point_ = sess.run(green_point_0)
                     blue_point_ = sess.run(blue_point_0)
@@ -225,15 +229,16 @@ def main():
 
                     
                     
-                    #a,b = sess.run([train_step,cross_entropy],feed_dict={x: _state0_, y_: red_point_})
-                    #print("red : "+str(b))
+                    a,_b_,_y_= sess.run([train_step,cross_entropy,y],feed_dict={x: _state0_, y_: red_point_})
+                    print("red : "+str(_b_)+" step : "+str(step)+
+                          "/n y : "+str(_y_)+" y_ : "+str(red_point))
                      
-                    a,b = sess.run([train_step,cross_entropy],feed_dict={x: _state1_, y_: green_point_})
-                    if(step%100==0):
-                        print("green : "+str(b)+" step : "+str(step))
+                    a,_b_,_y_ = sess.run([train_step,cross_entropy,y],feed_dict={x: _state1_, y_: green_point_})
+                    print("green : "+str(_b_)+" step : "+str(step)+" y : "+str(_y_)+" y_ : "+str(green_point))
                     
-                    #a,b = sess.run([train_step,cross_entropy],feed_dict={x: _state2_, y_: blue_point_})
-                    #print("blue : "+str(b))
+                    a,_b_,_y_= sess.run([train_step,cross_entropy,y],feed_dict={x: _state2_, y_: blue_point_})
+                    print("blue : "+str(_b_)+" step : "+str(step)+" y : "+str(_y_)+" y_ : "+str(blue_point))
+                    print("-----------------")
 
 
                     sess.run(tf.assign(state2,state1))
