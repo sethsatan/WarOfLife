@@ -1,18 +1,15 @@
 import tensorflow as tf
-import pygame
-from pygame.locals import *
 import numpy as np
 
 
     
 def main():
-    last_iteration= open("BdD","w")
-    f_write=""
+    last_iteration= open("BdD","a")
     with tf.name_scope("input"):
         NX = 60 #abscisse [Multiple de 3]
         NY = 60 #ordonnée
         RENDER = True
-        n_step = 2
+        n_step = 500
         px = NY*(NX//3)
         py_= (((NY*NX)//(5*5))*8)
         
@@ -80,13 +77,12 @@ def main():
     with tf.name_scope("session"):
         
         sess = tf.Session() # ouverture de la session
-        sess.run(init) # initilisation des vatiable de la session
-
-        
-       
+         
 
         for step in range(n_step):
             print(str(step)+"/"+str(n_step))
+            
+            sess.run(init)# initilisation des vatiable de la session
             
             sess.run(tf.assign(board,state)) # assignation du premier état au plateau
             sess.run(tf.assign(c_board,c_state)) # assignation du premier état au plateau des couleurs
@@ -137,12 +133,13 @@ def main():
                     _state1_=sess.run(state1)
                     _state2_=sess.run(state2)
 
-                    f_write+=""+str(red_point)+":["+"".join(map(str, _state0_))+"];"+str(green_point)+":["+"".join(map(str,_state1_))+"];"+str(blue_point)+":["+"".join(map(str,_state2_))+"];\n"
                     
+                    last_iteration.write(str(red_point)+":["+"".join(map(str, _state0_))+"];\n")
+                    last_iteration.write(str(green_point)+":["+"".join(map(str,_state1_))+"];\n")
+                    last_iteration.write(str(blue_point)+":["+"".join(map(str,_state2_))+"];\n")
                     
                     break
 
-    last_iteration.write(f_write)
     last_iteration.close
     print(str(step+1)+"/"+str(n_step))
 
