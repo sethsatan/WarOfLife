@@ -14,7 +14,7 @@ WIDTH = NX * SIZE
 HEIGHT = NY * SIZE
 BLACK = (0, 0, 0)
 
-GPS = 5
+GPS = 100
 
 
 def main():
@@ -25,11 +25,11 @@ def main():
     mainloop(screen)
 
 def mainloop(screen):
-    last_iteration= open("last_iteration.txt","r")
-    IA_board = last_iteration.read()
-    last_iteration.close
-    board = ast.literal_eval(IA_board)
-    
+    #last_iteration= open("last_iteration.txt","r")
+    #IA_board = last_iteration.read()
+    #last_iteration.close
+    #board = ast.literal_eval(IA_board)
+    board = new_board();
     fps_clock = pygame.time.Clock()
     pause  = True
     gen = 0
