@@ -9,7 +9,7 @@ state2=[[1,0,1,1,1,1,1,0,0,0,0,1,1,0,0,0,1,1,1,0],[1,0,0,1,1,1,0,1,0,1,1,1,0,1,0
 
 
 
-def main():     #stat0,stat1,stat2
+def main(stat0,stat1,stat2,GEN_Limite=50,NX=60,NY=60):     
 
     c_state0 = [[[False,0] for x in range(NX//3)] for y in range(NY)] 
     c_state1 = [[[False,0] for x in range(NX//3)] for y in range(NY)]
@@ -55,18 +55,19 @@ def main():     #stat0,stat1,stat2
                             print("color error")
                         
 
-                if C_color[0]==C_color[1] and C_color[1]==C_color[2] and C_color[0]>0:
-                    new_color = 4
-                elif C_color[0]>C_color[1] and C_color[0]>C_color[2] :
-                    new_color = 1
-                elif C_color[1]>C_color[0] and C_color[1]>C_color[2] :
-                    new_color = 2
-                elif C_color[2]>C_color[0] and C_color[2]>C_color[1] :
-                    new_color = 3
-                else:
-                    new_color = 0
+                
                                                  
                 if voisins == 3:
+                    if C_color[0]==C_color[1] and C_color[1]==C_color[2] and C_color[0]>0:
+                        new_color = 4
+                    elif C_color[0]>C_color[1] and C_color[0]>C_color[2] :
+                        new_color = 1
+                    elif C_color[1]>C_color[0] and C_color[1]>C_color[2] :
+                        new_color = 2
+                    elif C_color[2]>C_color[0] and C_color[2]>C_color[1] :
+                        new_color = 3
+                    else:
+                        new_color = 0
                     n_board[y][x] = [True,new_color]
                 elif voisins == 2:
                     n_board[y][x] = board[y][x]
@@ -81,9 +82,11 @@ def main():     #stat0,stat1,stat2
     red_point = 0
     green_point = 0
     blue_point = 0
+    total = 0
     for y in range(NY):
             for x in range(NX):
                 if board[y][x][0]:
+                    total+=1
                     if board[y][x][1]==1:
                         red_point+=1
                     elif board[y][x][1]==2:
@@ -98,8 +101,6 @@ def main():     #stat0,stat1,stat2
                         print("End error")
                         
                     
-    print(red_point,green_point,blue_point)            
+    print(red_point,green_point,blue_point,total)            
     return red_point,green_point,blue_point
-        
-if __name__ == "__main__":
-    main()   
+           
