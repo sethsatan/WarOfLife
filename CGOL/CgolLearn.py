@@ -70,21 +70,8 @@ def main():
 
         p = sess.run([Relu],feed_dict={s0: stat0, _red_: [red_point], s1: stat1, _green_: [green_point], s2: stat2, _blue_: [blue_point]})
         print(p)
-                    
-            
-        print("end")
-
-
-def cgol(stat0,stat1,stat2):
-    c_state0 = state0 * 1 
-    c_state1 = state1 * 2 
-    c_state2 = state2 * 3 
-    board = tf.concat([c_state0,c_state1,c_state2],1)
-    
-    
-
-    return red_point,green_point,blue_point
-        
+          
+        print("end")       
 
 if __name__ == "__main__":
     main()                
