@@ -1,6 +1,6 @@
 import numpy as np
 
-def main(stat0,stat1,stat2,GEN_Limite=50,NX=60,NY=60):     
+def main(state0,state1,state2,GEN_Limite=50,NX=60,NY=60):     
 
     c_state0 = [[[False,0] for x in range(NX//3)] for y in range(NY)] 
     c_state1 = [[[False,0] for x in range(NX//3)] for y in range(NY)]
@@ -14,22 +14,25 @@ def main(stat0,stat1,stat2,GEN_Limite=50,NX=60,NY=60):
                 c_state1[y][x] = [True,2]
             if state2[y][x] == 1:   
                 c_state2[y][x] = [True,3]
-
-    board = np.concatenate((c_state0,c_state1,c_state2), axis=1)
+      
+    board = np.concatenate((c_state0,c_state1,c_state2), axis=1)       
     gen = 0
+    
     while True:     
-        n_board = [[[False, [0, 0, 0]] for x in range(NX)] for y in range(NY)]
+        n_board = [[[False, 0] for x in range(NX)] for y in range(NY)]
         for y in range(NY):
             for x in range(NX):
                 #voisins,color = process_cell(board, x, y)
                 voisins = 0
                 C_color = [0,0,0]
                 for i in range(9):
+                    if i == 4: continue
                     xx = (i % 3) - 1
                     yy = (i // 3) - 1
 
                     cx = (x + xx + NX) % NX                    
                     cy = (y + yy + NY) % NY
+                    
                     if board[cy][cx][0]:
                         voisins += 1
                         if board[cy][cx][1]== 1:
@@ -61,11 +64,13 @@ def main(stat0,stat1,stat2,GEN_Limite=50,NX=60,NY=60):
                         new_color = 0
                     n_board[y][x] = [True,new_color]
                 elif voisins == 2:
-                    n_board[y][x] = board[y][x]
+                    n_board[y][x][0] = board[y][x][0]
+                    n_board[y][x][1] = board[y][x][1]
+                    
                 else:
                     #Cellule morte
                     pass
-                
+        #print (board)      
         board = n_board
         gen += 1
         if gen==GEN_Limite:
@@ -92,6 +97,6 @@ def main(stat0,stat1,stat2,GEN_Limite=50,NX=60,NY=60):
                         print("End error")
                         
                     
-    print(red_point,green_point,blue_point,total)            
-    return red_point,green_point,blue_point
+    #print(red_point,green_point,blue_point,total)            
+    return red_point,green_point,blue_point,total
            
