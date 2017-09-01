@@ -46,22 +46,23 @@ def main(state0,state1,state2,GEN_Limite=50,NX=60,NY=60):
                             C_color[1]+=1
                             C_color[2]+=1
                         else:
-                            print("color error")
+                            print("color error : " + str(board[cy][cx]))
+                                  
                         
 
                 
                                                  
                 if voisins == 3:
-                    if C_color[0]==C_color[1] and C_color[1]==C_color[2] and C_color[0]>0:
-                        new_color = 4
-                    elif C_color[0]>C_color[1] and C_color[0]>C_color[2] :
+                     
+                    if C_color[0]>C_color[1] and C_color[0]>C_color[2] :
                         new_color = 1
                     elif C_color[1]>C_color[0] and C_color[1]>C_color[2] :
                         new_color = 2
                     elif C_color[2]>C_color[0] and C_color[2]>C_color[1] :
                         new_color = 3
                     else:
-                        new_color = 0
+                        new_color = 4
+                        
                     n_board[y][x] = [True,new_color]
                 elif voisins == 2:
                     n_board[y][x][0] = board[y][x][0]

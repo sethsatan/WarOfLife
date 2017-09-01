@@ -3,11 +3,11 @@ import random
 
 NX=60
 NY=60
-GEN_Limite=50
+GEN_Limite=100
 
 last_iteration= open("BD","a")
-for i in range(1):
-    if i%50=0:print(i)
+for i in range(900):
+    if i%20==0:print(i)
     state0=[[ random.randint(0, 1) for x in range(NX//3)] for y in range(NY)]
     state1=[[ random.randint(0, 1) for x in range(NX//3)] for y in range(NY)]
     state2=[[ random.randint(0, 1) for x in range(NX//3)] for y in range(NY)]
